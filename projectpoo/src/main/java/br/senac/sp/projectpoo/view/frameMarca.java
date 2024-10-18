@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import br.senac.sp.projectpoo.dao.ConnectionFactory;
 import br.senac.sp.projectpoo.modelo.Marca;
 
 import javax.swing.JLabel;
@@ -37,6 +38,7 @@ public class frameMarca extends JFrame {
 				try {
 					frameMarca frame = new frameMarca();
 					frame.setVisible(true);
+					ConnectionFactory.getConexao();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
