@@ -2,7 +2,7 @@ package br.senac.sp.projectpoo.modelo;
 
 public class Marca {
 	private int id;
-	private String marca;
+	private String nome;
 	private byte[] logo;
 
 	public int getId() {
@@ -13,12 +13,12 @@ public class Marca {
 		this.id = id;
 	}
 
-	public String getMarca() {
-		return marca;
+	public String getNome() {
+		return nome;
 	}
 
-	public void setMarca(String marca) {
-		this.marca = marca;
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 
 	public byte[] getLogo() {

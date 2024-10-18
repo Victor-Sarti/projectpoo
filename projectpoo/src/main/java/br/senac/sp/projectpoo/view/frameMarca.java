@@ -5,7 +5,12 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import br.senac.sp.projectpoo.modelo.Marca;
+
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -21,6 +26,7 @@ public class frameMarca extends JFrame {
 	private JTextField tfNome;
 	private JTextField textField_2;
 	private JTextField lbLogo;
+	private Marca marca;
 
 	/**
 	 * Launch the application.
@@ -76,6 +82,13 @@ public class frameMarca extends JFrame {
 		btnSalvar.setMnemonic('s');
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(tfNome.getText().trim().isEmpty()) {
+					JOptionPane.showMessageDialog(frameMarca.this, "Informe o nome", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+					tfNome.requestFocus(); //para o cursor ficar piscando 
+				}else {
+					marca = new Marca();
+					marca.setNome(tfNome.getText().trim());
+				}
 			}
 		});
 		btnSalvar.setBounds(25, 91, 89, 23);
