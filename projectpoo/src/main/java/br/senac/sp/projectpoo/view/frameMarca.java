@@ -16,8 +16,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+import java.awt.Image;
+
 import javax.swing.JTextField;
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
@@ -27,6 +30,7 @@ import java.awt.event.ActionEvent;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,13 +42,13 @@ public class frameMarca extends JFrame {
 	private JTextField tfId;
 	private JTextField tfNome;
 	private JTextField textField_2;
-	private JTextField lbLogo;
 	private Marca marca;
 	private MarcaDAO dao;
 	// janela para salvar ou abrir um arquivo
 	private JFileChooser chooser;
 	private FileFilter imageFilter;
 	private File selecionado;
+
 	/**
 	 * Launch the application.
 	 */
@@ -73,7 +77,7 @@ public class frameMarca extends JFrame {
 
 		setTitle("Cadastro de Marcas");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 491, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -112,9 +116,9 @@ public class frameMarca extends JFrame {
 				} else {
 					marca = new Marca();
 					marca.setNome(tfNome.getText().trim());
-					
+
 					try {
-						if(selecionado != null) {
+						if (selecionado != null) {
 							byte[] imagemBytes = Files.readAllBytes(selecionado.toPath());
 							marca.setLogo(imagemBytes);
 						}
@@ -149,21 +153,29 @@ public class frameMarca extends JFrame {
 		textField_2.setColumns(10);
 		textField_2.setBounds(10, 145, 401, 105);
 		contentPane.add(textField_2);
-
-		lbLogo = new JTextField();
+		
+		JLabel lbLogo = new JLabel("");
 		lbLogo.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
 					chooser.setFileFilter(imageFilter);
-					if(chooser.showOpenDialog(frameMarca.this) == JFileChooser.APPROVE_OPTION) {
-					 selecionado = chooser.getSelectedFile();
+					if (chooser.showOpenDialog(frameMarca.this) == JFileChooser.APPROVE_OPTION) {
+						selecionado = chooser.getSelectedFile();
+						try {
+							BufferedImage bufImg = ImageIO.read(selecionado);
+							Image imagem = bufImg.getScaledInstance(lbLogo.getWidth(), lbLogo.getHeight(), Image.SCALE_SMOOTH);
+							ImageIcon imgLabel = new ImageIcon(imagem);
+							lbLogo.setIcon(imgLabel);
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
 					}
 				}
 			}
 		});
-		lbLogo.setBackground(Color.LIGHT_GRAY);
-		lbLogo.setBounds(322, 11, 89, 89);
+		lbLogo.setBackground(Color.RED);
+		lbLogo.setBounds(339, 23, 113, 87);
 		lbLogo.setOpaque(true);
 		contentPane.add(lbLogo);
 	}
@@ -174,5 +186,4 @@ public class frameMarca extends JFrame {
 		marca = null;
 		tfNome.requestFocus();
 	}
-
 }
