@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import br.senac.sp.projectpoo.dao.ConnectionFactory;
+import br.senac.sp.projectpoo.dao.MarcaDAO;
 import br.senac.sp.projectpoo.modelo.Marca;
 
 import javax.swing.JLabel;
@@ -16,6 +17,7 @@ import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 
@@ -28,6 +30,8 @@ public class frameMarca extends JFrame {
 	private JTextField textField_2;
 	private JTextField lbLogo;
 	private Marca marca;
+	private MarcaDAO dao;
+	
 
 	/**
 	 * Launch the application.
@@ -50,6 +54,7 @@ public class frameMarca extends JFrame {
 	 * Create the frame.
 	 */
 	public frameMarca() {
+		dao = new MarcaDAO(ConnectionFactory.getConexao());
 		setTitle("Cadastro de Marcas");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -90,6 +95,13 @@ public class frameMarca extends JFrame {
 				}else {
 					marca = new Marca();
 					marca.setNome(tfNome.getText().trim());
+					//TODO setar a logo
+					try {
+						dao.inserir(marca);
+					}catch(SQLException e1) {
+						JOptionPane.showMessageDialog(frameMarca.this, e1.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+						e1.printStackTrace();
+					}
 				}
 			}
 		});
