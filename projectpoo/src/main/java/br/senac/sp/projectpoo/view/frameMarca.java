@@ -98,6 +98,7 @@ public class frameMarca extends JFrame {
 					//TODO setar a logo
 					try {
 						dao.inserir(marca);
+						limpar();
 					}catch(SQLException e1) {
 						JOptionPane.showMessageDialog(frameMarca.this, e1.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
 						e1.printStackTrace();
@@ -114,8 +115,15 @@ public class frameMarca extends JFrame {
 		contentPane.add(btnExcluir);
 		
 		JButton btnLimpar = new JButton("Limpar");
+		btnLimpar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				limpar();
+			}
+		});
 		btnLimpar.setBounds(223, 91, 89, 23);
 		contentPane.add(btnLimpar);
+		
+		
 		
 		textField_2 = new JTextField();
 		textField_2.setColumns(10);
@@ -128,4 +136,11 @@ public class frameMarca extends JFrame {
 		lbLogo.setOpaque(true);
 		contentPane.add(lbLogo);
 	}
+	private void limpar() {
+		tfId.setText("");
+		tfNome.setText("");
+		marca = null;
+		tfNome.requestFocus();
+	}
+	
 }
