@@ -27,6 +27,9 @@ import java.awt.event.ActionEvent;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 public class frameMarca extends JFrame {
 
@@ -41,7 +44,7 @@ public class frameMarca extends JFrame {
 	// janela para salvar ou abrir um arquivo
 	private JFileChooser chooser;
 	private FileFilter imageFilter;
-
+	private File selecionado;
 	/**
 	 * Launch the application.
 	 */
@@ -109,11 +112,15 @@ public class frameMarca extends JFrame {
 				} else {
 					marca = new Marca();
 					marca.setNome(tfNome.getText().trim());
-					// TODO setar a logo
+					
 					try {
+						if(selecionado != null) {
+							byte[] imagemBytes = Files.readAllBytes(selecionado.toPath());
+							marca.setLogo(imagemBytes);
+						}
 						dao.inserir(marca);
 						limpar();
-					} catch (SQLException e1) {
+					} catch (SQLException | IOException e1) {
 						JOptionPane.showMessageDialog(frameMarca.this, e1.getMessage(), "Erro",
 								JOptionPane.ERROR_MESSAGE);
 						e1.printStackTrace();
@@ -149,7 +156,9 @@ public class frameMarca extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
 					chooser.setFileFilter(imageFilter);
-					chooser.showOpenDialog(frameMarca.this);
+					if(chooser.showOpenDialog(frameMarca.this) == JFileChooser.APPROVE_OPTION) {
+					 selecionado = chooser.getSelectedFile();
+					}
 				}
 			}
 		});
