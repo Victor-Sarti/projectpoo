@@ -162,6 +162,27 @@ public class frameMarca extends JFrame {
 		contentPane.add(btnSalvar);
 
 		JButton btnExcluir = new JButton("Excluir");
+		btnExcluir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(marca != null ) {
+					if(JOptionPane.showConfirmDialog(frameMarca.this,"Deseja excluir a marca " +marca.getNome()) == JOptionPane.YES_OPTION){
+						try {
+							dao.excluir(marca.getId());
+							marcas = dao.lista();
+							tableModel.setList(marcas);
+							tableModel.fireTableDataChanged();
+							limpar();
+							
+						}catch (SQLException e1) {
+							e1.printStackTrace();
+						}
+					}
+				}else {
+					JOptionPane.showMessageDialog(frameMarca.this, "Selecione uma marca para exclui-la");
+				}
+				
+			}
+		});
 		btnExcluir.setMnemonic('e');
 		btnExcluir.setBounds(124, 91, 89, 23);
 		contentPane.add(btnExcluir);
