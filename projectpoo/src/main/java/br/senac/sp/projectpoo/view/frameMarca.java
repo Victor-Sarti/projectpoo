@@ -5,6 +5,8 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -20,6 +22,7 @@ import java.awt.Font;
 import java.awt.Image;
 
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -85,6 +88,7 @@ public class frameMarca extends JFrame {
 			JOptionPane.showMessageDialog(frameMarca.this ,"Erro: " +e.getMessage(), "Erro:", JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
+		tableModel = new MarcaTableModel(marcas);
 
 		chooser = new JFileChooser();
 		imageFilter = new FileNameExtensionFilter("imagens", ImageIO.getReaderFileSuffixes());
@@ -192,7 +196,23 @@ public class frameMarca extends JFrame {
 		scrollPane.setBounds(20, 146, 432, 394);
 		contentPane.add(scrollPane);
 		
-		tbMarcas = new JTable();
+		tbMarcas = new JTable(tableModel);
+		tbMarcas.setToolTipText("Selecione um item para alterar ou excluir");
+		tbMarcas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tbMarcas.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				int linha = tbMarcas.getSelectedRow();
+				if(linha >= 0 ) {
+					marca = marcas.get(linha);
+					tfId.setText("" + marca.getId());
+					tfNome.setText(marca.getNome());
+				}
+			}
+			
+		});
+		
 		scrollPane.setViewportView(tbMarcas);
 	}
 

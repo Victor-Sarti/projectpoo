@@ -8,6 +8,7 @@ import br.senac.sp.projectpoo.modelo.Marca;
 
 public class MarcaTableModel extends AbstractTableModel {
 	private List<Marca> lista;
+	private String[] cabecalho = { "Id", "Nome"};
 
 	public MarcaTableModel(List<Marca> marcas) {
 		this.lista = marcas;
@@ -24,7 +25,7 @@ public class MarcaTableModel extends AbstractTableModel {
 
 	@Override
 	public int getColumnCount() {
-		return 2;
+		return cabecalho.length;
 	}
 
 	@Override
@@ -38,6 +39,11 @@ public class MarcaTableModel extends AbstractTableModel {
 		default:
 			return null;
 		}
+	}
+	
+	@Override
+	public String getColumnName(int column) {
+		return cabecalho[column];
 	}
 
 }
