@@ -57,7 +57,6 @@ public class frameMarca extends JFrame {
 	private JTable tbMarcas;
 	private List<Marca> marcas;
 	private MarcaTableModel tableModel;
-	
 
 	/**
 	 * Launch the application.
@@ -81,11 +80,12 @@ public class frameMarca extends JFrame {
 	 */
 	public frameMarca() {
 		dao = new MarcaDAO(ConnectionFactory.getConexao());
-		
+
 		try {
 			marcas = dao.lista();
 		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(frameMarca.this ,"Erro: " +e.getMessage(), "Erro:", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(frameMarca.this, "Erro: " + e.getMessage(), "Erro:",
+					JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
 		tableModel = new MarcaTableModel(marcas);
@@ -132,15 +132,23 @@ public class frameMarca extends JFrame {
 							JOptionPane.INFORMATION_MESSAGE);
 					tfNome.requestFocus(); // para o cursor ficar piscando
 				} else {
-					marca = new Marca();
+					if (marca == null) {
+						marca = new Marca();
+					}
 					marca.setNome(tfNome.getText().trim());
-
 					try {
 						if (selecionado != null) {
 							byte[] imagemBytes = Files.readAllBytes(selecionado.toPath());
 							marca.setLogo(imagemBytes);
 						}
-						dao.inserir(marca);
+						if (marca.getId() == 0) {
+							dao.inserir(marca);
+						} else {
+							dao.alterar(marca);
+						}
+						marcas = dao.lista();
+						tableModel.setList(marcas);
+						tableModel.fireTableDataChanged();
 						limpar();
 					} catch (SQLException | IOException e1) {
 						JOptionPane.showMessageDialog(frameMarca.this, e1.getMessage(), "Erro",
@@ -166,7 +174,7 @@ public class frameMarca extends JFrame {
 		});
 		btnLimpar.setBounds(223, 91, 89, 23);
 		contentPane.add(btnLimpar);
-		
+
 		JLabel lbLogo = new JLabel("");
 		lbLogo.addMouseListener(new MouseAdapter() {
 			@Override
@@ -177,7 +185,8 @@ public class frameMarca extends JFrame {
 						selecionado = chooser.getSelectedFile();
 						try {
 							BufferedImage bufImg = ImageIO.read(selecionado);
-							Image imagem = bufImg.getScaledInstance(lbLogo.getWidth(), lbLogo.getHeight(), Image.SCALE_SMOOTH);
+							Image imagem = bufImg.getScaledInstance(lbLogo.getWidth(), lbLogo.getHeight(),
+									Image.SCALE_SMOOTH);
 							ImageIcon imgLabel = new ImageIcon(imagem);
 							lbLogo.setIcon(imgLabel);
 						} catch (IOException e1) {
@@ -191,11 +200,11 @@ public class frameMarca extends JFrame {
 		lbLogo.setBounds(339, 23, 113, 87);
 		lbLogo.setOpaque(true);
 		contentPane.add(lbLogo);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(20, 146, 432, 394);
 		contentPane.add(scrollPane);
-		
+
 		tbMarcas = new JTable(tableModel);
 		tbMarcas.setToolTipText("Selecione um item para alterar ou excluir");
 		tbMarcas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -204,15 +213,15 @@ public class frameMarca extends JFrame {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				int linha = tbMarcas.getSelectedRow();
-				if(linha >= 0 ) {
+				if (linha >= 0) {
 					marca = marcas.get(linha);
 					tfId.setText("" + marca.getId());
 					tfNome.setText(marca.getNome());
 				}
 			}
-			
+
 		});
-		
+
 		scrollPane.setViewportView(tbMarcas);
 	}
 
