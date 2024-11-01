@@ -45,6 +45,16 @@ public class MarcaDAO {
 		
 	}
 	
+	public void alterar(Marca marca) throws SQLException {
+		sql = "update marca set nome = ? , logo = ? , where id = ?";
+		stmt = conexao.prepareStatement(sql);
+		stmt.setString(1, marca.getNome());
+		stmt.setBytes(2, marca.getLogo());
+		stmt.setInt(3, marca.getId());
+		stmt.close();
+		
+	}
+	
 	
 	
 	
