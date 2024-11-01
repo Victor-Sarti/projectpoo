@@ -11,6 +11,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import br.senac.sp.projectpoo.dao.ConnectionFactory;
 import br.senac.sp.projectpoo.dao.MarcaDAO;
 import br.senac.sp.projectpoo.modelo.Marca;
+import br.senac.sp.projectpoo.tablemodel.MarcaTableModel;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -26,6 +27,7 @@ import javax.swing.JFileChooser;
 
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
@@ -34,6 +36,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 public class frameMarca extends JFrame {
 
@@ -41,13 +45,16 @@ public class frameMarca extends JFrame {
 	private JPanel contentPane;
 	private JTextField tfId;
 	private JTextField tfNome;
-	private JTextField textField_2;
 	private Marca marca;
 	private MarcaDAO dao;
 	// janela para salvar ou abrir um arquivo
 	private JFileChooser chooser;
 	private FileFilter imageFilter;
 	private File selecionado;
+	private JTable tbMarcas;
+	private List<Marca> marcas;
+	private MarcaTableModel tableModel;
+	
 
 	/**
 	 * Launch the application.
@@ -71,13 +78,20 @@ public class frameMarca extends JFrame {
 	 */
 	public frameMarca() {
 		dao = new MarcaDAO(ConnectionFactory.getConexao());
+		
+		try {
+			marcas = dao.lista();
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(frameMarca.this ,"Erro: " +e.getMessage(), "Erro:", JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+		}
 
 		chooser = new JFileChooser();
 		imageFilter = new FileNameExtensionFilter("imagens", ImageIO.getReaderFileSuffixes());
 
 		setTitle("Cadastro de Marcas");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 491, 300);
+		setBounds(100, 100, 491, 601);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -148,11 +162,6 @@ public class frameMarca extends JFrame {
 		});
 		btnLimpar.setBounds(223, 91, 89, 23);
 		contentPane.add(btnLimpar);
-
-		textField_2 = new JTextField();
-		textField_2.setColumns(10);
-		textField_2.setBounds(10, 145, 401, 105);
-		contentPane.add(textField_2);
 		
 		JLabel lbLogo = new JLabel("");
 		lbLogo.addMouseListener(new MouseAdapter() {
@@ -178,6 +187,13 @@ public class frameMarca extends JFrame {
 		lbLogo.setBounds(339, 23, 113, 87);
 		lbLogo.setOpaque(true);
 		contentPane.add(lbLogo);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(20, 146, 432, 394);
+		contentPane.add(scrollPane);
+		
+		tbMarcas = new JTable();
+		scrollPane.setViewportView(tbMarcas);
 	}
 
 	private void limpar() {
