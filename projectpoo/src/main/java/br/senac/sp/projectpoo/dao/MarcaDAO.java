@@ -55,6 +55,14 @@ public class MarcaDAO {
 		
 	}
 	
+	public void excluir (int id ) throws SQLException{
+		sql = "delete from marca where id = ?";
+		stmt = conexao.prepareStatement(sql);
+		stmt.setInt(1, id);
+		stmt.execute();
+		stmt.close();
+	}
+	
 	
 	
 	
